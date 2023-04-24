@@ -1,5 +1,5 @@
 import get from 'lodash.get'
-import { NestedKeyOf, Order } from './types'
+import { NestedKeyOf, Order } from '../types'
 
 // Sort for sealing and other models
 export function applySort<T extends object>(
@@ -11,7 +11,7 @@ export function applySort<T extends object>(
     return data
   }
 
-  return data.sort((a, b) => {
+  return [...data].sort((a, b) => {
     const aSelector = get(a, sort)?.toString()
 
     const bSelector = get(b, sort)?.toString()

@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+a[aria-disabled='true'] {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.5;
+}

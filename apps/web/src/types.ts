@@ -39,3 +39,11 @@ export type SearchParamsSort<T extends object> = {
   sort?: NestedKeyOf<T>
   order?: Order
 }
+
+export type SearchParamsPagination = {
+  page?: number
+  pageSize?: number
+}
+
+export type BaseSearchParams<TSort extends object> = SearchParamsSort<TSort> &
+  SearchParamsPagination

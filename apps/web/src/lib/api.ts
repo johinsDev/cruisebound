@@ -1,5 +1,5 @@
-import { API_URL } from './config'
-import { Sealing } from './types'
+import { API_URL } from '../config'
+import { Sealing } from '../types'
 
 export async function getSailingsAPI(): Promise<Sealing[]> {
   const sealing = (await fetch(API_URL)
