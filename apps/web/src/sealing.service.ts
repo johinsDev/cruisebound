@@ -1,10 +1,55 @@
 import { getSailingsAPI } from './lib/api'
-import { AbstractFilter, Filter, applyFilters } from './lib/filters'
+import { AbstractFilter, applyFilters } from './lib/filters'
 import { applyPagination } from './lib/pagination'
 import { applySort } from './lib/sort'
 import { BaseSearchParams, Sealing } from './types'
 
-export type SearchParamsFilter = SearchParamsLine & SearchParamsDepartureDate
+export type SearchParamsDepartureDate = {
+  departureDate?: string
+}
+
+export class DepartureDateFilter extends AbstractFilter<
+  Sealing,
+  SearchParamsDepartureDate
+> {
+  apply(sailing: Sealing) {
+    const departureDate = this.getSearchParam('departureDate')
+
+    if (!departureDate) {
+      return true
+    }
+
+    return sailing.departureDate === departureDate
+  }
+}
+
+type SearchParamsLine = {
+  line?: string
+}
+
+export class LineFilter extends AbstractFilter<Sealing, SearchParamsLine> {
+  apply(sailing: Sealing) {
+    const line = this.getSearchParamOrDefault('line', '')
+
+    return sailing.ship.line.name.toLowerCase().includes(line.toLowerCase())
+  }
+}
+
+type SearchParamsQ = {
+  q?: string
+}
+
+export class QFilter extends AbstractFilter<Sealing, SearchParamsQ> {
+  apply(sailing: Sealing) {
+    const q = this.getSearchParamOrDefault('q', '')
+
+    return JSON.stringify(sailing).toLowerCase().includes(q.toLowerCase())
+  }
+}
+
+export type SearchParamsFilter = SearchParamsLine &
+  SearchParamsDepartureDate &
+  SearchParamsQ
 
 export type SealingSearchParams = SearchParamsFilter & BaseSearchParams<Sealing>
 
@@ -19,6 +64,7 @@ export async function getSealing(searchParams: SealingSearchParams) {
   const filters = [
     new DepartureDateFilter(searchParams),
     new LineFilter(searchParams),
+    new QFilter(searchParams),
   ]
 
   let data = applyFilters(searchParams, filters, await getSailingsAPI())
@@ -36,39 +82,5 @@ export async function getSealing(searchParams: SealingSearchParams) {
   return {
     shipLineList,
     ...results,
-  }
-}
-
-export type SearchParamsDepartureDate = {
-  departureDate?: string
-}
-
-export class DepartureDateFilter
-  extends AbstractFilter<SearchParamsDepartureDate>
-  implements Filter<Sealing, SearchParamsDepartureDate>
-{
-  apply(sailing: Sealing) {
-    const departureDate = this.getSearchParam('departureDate')
-
-    if (!departureDate) {
-      return true
-    }
-
-    return sailing.departureDate === departureDate
-  }
-}
-
-type SearchParamsLine = {
-  line?: string
-}
-
-export class LineFilter
-  extends AbstractFilter<SearchParamsLine>
-  implements Filter<Sealing, SearchParamsLine>
-{
-  apply(sailing: Sealing) {
-    const line = this.getSearchParamOrDefault('line', '')
-
-    return sailing.ship.line.name.toLowerCase().includes(line.toLowerCase())
   }
 }

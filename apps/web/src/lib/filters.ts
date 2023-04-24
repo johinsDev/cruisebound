@@ -5,7 +5,9 @@ export interface Filter<
   apply: (sailing: TData, searchParams: TSearch, data: TData[]) => boolean
 }
 
-export class AbstractFilter<TSearch extends object> {
+export class AbstractFilter<TData extends object, TSearch extends object>
+  implements Filter<TData, TSearch>
+{
   constructor(private searchParams: TSearch) {}
 
   protected getSearchParams() {
@@ -20,6 +22,10 @@ export class AbstractFilter<TSearch extends object> {
     const value = this.getSearchParam(key)
 
     return value || defaultValue
+  }
+
+  apply(sailing: TData, searchParams: TSearch, data: TData[]) {
+    return true
   }
 }
 
