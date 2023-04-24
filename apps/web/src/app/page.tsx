@@ -1,6 +1,7 @@
 import { Pagination } from '@/app/(components)/pagination'
 import { SortList } from '@/app/(components)/sort-list'
 import { SealingSearchParams, getSealing } from '@/sealing.service'
+import { DepartureFilter } from './(components)/filters/departure'
 import { SearchFilter } from './(components)/filters/search'
 
 type HomeProps = {
@@ -15,6 +16,8 @@ export default async function Home({ searchParams }: HomeProps) {
       <SortList />
 
       <SearchFilter />
+
+      <DepartureFilter />
 
       {sealing.results.map((s, index) => (
         <div
