@@ -1,10 +1,17 @@
 import logo from '@/app/(assets)/logo.svg'
 import { Pagination } from '@/app/(components)/pagination'
-import { Button } from '@/components/ui/button'
-import { SealingSearchParams, getSealing } from '@/sealing.service'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/tw'
+import {
+  SealingSearchParams,
+  getDeparturePort,
+  getSealing,
+} from '@/sealing.service'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { DepartureFilter } from './(components)/filters/departure'
+import { PortsFilter } from './(components)/filters/port'
 import { SearchFilter } from './(components)/filters/search'
 import { SortList } from './(components)/sort-list'
 
@@ -14,6 +21,8 @@ type HomeProps = {
 
 export default async function Home({ searchParams }: HomeProps) {
   const sealing = await getSealing(searchParams)
+
+  const ports = await getDeparturePort()
 
   return (
     <section className="grid grid-cols-12 gap-4 flex-1">
@@ -26,6 +35,8 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <DepartureFilter />
 
+        <PortsFilter options={ports} />
+
         <Image src={logo} alt="Logo" className="mt-auto mx-auto" />
       </aside>
 
@@ -37,9 +48,19 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <div className="flex gap-4 items-center font-semibold">
           {sealing.totalResults} trips found
-          <Button size={'sm'} color={'white'}>
+          <Link
+            className={cn(
+              buttonVariants({
+                color: 'white',
+                size: 'sm',
+              })
+            )}
+            href={{
+              pathname: '/',
+            }}
+          >
             Reset filters
-          </Button>
+          </Link>
         </div>
 
         <div className="flex-1">

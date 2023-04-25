@@ -12,7 +12,7 @@ import { cn } from '@/lib/tw'
 import { useDebounceEffect } from 'ahooks'
 import dayjs from 'dayjs'
 import { CalendarIcon, X } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export function DepartureFilter() {
   const { params, updateQueryParams } = useNavigation()
@@ -43,6 +43,16 @@ export function DepartureFilter() {
     [date],
     { wait: 500 }
   )
+
+  useEffect(() => {
+    if (dayjs(date).format('YYYY-MM-DD') === params.get('departureDate')) return
+
+    setDate(
+      dayjs(params.get('departureDate')).isValid()
+        ? dayjs(params.get('departureDate')).toDate()
+        : undefined
+    )
+  }, [params.get('departureDate')])
 
   return (
     <div className="flex flex-col gap-1">

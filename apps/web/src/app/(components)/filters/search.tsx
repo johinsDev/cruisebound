@@ -3,12 +3,12 @@
 import { Input } from '@/components/ui/input'
 import { useNavigation } from '@/hooks/use-navigation'
 import { useDebounceEffect } from 'ahooks'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function SearchFilter() {
   const { params, updateQueryParams } = useNavigation()
 
-  const [value, setValue] = useState(params.get('q') ?? undefined)
+  const [value, setValue] = useState(params.get('q'))
 
   useDebounceEffect(
     () => {
@@ -28,12 +28,18 @@ export function SearchFilter() {
     { wait: 500 }
   )
 
+  useEffect(() => {
+    if (params.get('q') === value) return
+
+    setValue(params.get('q'))
+  }, [params.get('q')])
+
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor="q">Search</label>
       <Input
         placeholder="Search"
-        value={value}
+        value={value ?? ''}
         name="q"
         onChange={(e) => setValue(e.target.value)}
       />

@@ -23,15 +23,21 @@ export class DepartureDateFilter extends AbstractFilter<
   }
 }
 
-type SearchParamsLine = {
-  line?: string
+type SearchParamsPort = {
+  port?: string
 }
 
-export class LineFilter extends AbstractFilter<Sealing, SearchParamsLine> {
+export class PortFilter extends AbstractFilter<Sealing, SearchParamsPort> {
   apply(sailing: Sealing) {
-    const line = this.getSearchParamOrDefault('line', '')
+    const line = this.getSearchParamOrDefault('port', '')
 
-    return sailing.ship.line.name.toLowerCase().includes(line.toLowerCase())
+    if (!line) {
+      return true
+    }
+
+    return sailing.itinerary
+      .map((i) => i.toLowerCase())
+      .includes(line.toLowerCase())
   }
 }
 
@@ -47,15 +53,18 @@ export class QFilter extends AbstractFilter<Sealing, SearchParamsQ> {
   }
 }
 
-export type SearchParamsFilter = SearchParamsLine &
+export type SearchParamsFilter = SearchParamsPort &
   SearchParamsDepartureDate &
   SearchParamsQ
 
 export type SealingSearchParams = SearchParamsFilter & BaseSearchParams<Sealing>
 
-function getShipLineList(data: Sealing[]) {
-  return data
-    .map((sailing) => sailing.ship.line.name)
+export async function getDeparturePort() {
+  const sailing = await getSailingsAPI()
+
+  return sailing
+    .map((sailing) => sailing.itinerary)
+    .flat()
     .filter((value, index, self) => self.indexOf(value) === index)
     .sort()
 }
@@ -63,13 +72,11 @@ function getShipLineList(data: Sealing[]) {
 export async function getSealing(searchParams: SealingSearchParams) {
   const filters = [
     new DepartureDateFilter(searchParams),
-    new LineFilter(searchParams),
+    new PortFilter(searchParams),
     new QFilter(searchParams),
   ]
 
   let data = applyFilters(searchParams, filters, await getSailingsAPI())
-
-  const shipLineList = getShipLineList(data)
 
   data = applySort<Sealing>(data, searchParams.sort, searchParams.order)
 
@@ -79,8 +86,5 @@ export async function getSealing(searchParams: SealingSearchParams) {
     searchParams.pageSize
   )
 
-  return {
-    shipLineList,
-    ...results,
-  }
+  return results
 }
