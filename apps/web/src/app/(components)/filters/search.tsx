@@ -8,11 +8,15 @@ import { useState } from 'react'
 export function SearchFilter() {
   const { params, updateQueryParams } = useNavigation()
 
-  const [value, setValue] = useState(params.get('q') || '')
+  const [value, setValue] = useState(params.get('q') ?? undefined)
 
   useDebounceEffect(
     () => {
+      if (value === params.get('q')) return
+
       updateQueryParams((params) => {
+        params.set('page', '1')
+
         if (value) {
           params.set('q', value)
         } else {

@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 import { DepartureFilter } from './(components)/filters/departure'
 import { SearchFilter } from './(components)/filters/search'
+import { SortList } from './(components)/sort-list'
 
 type HomeProps = {
   searchParams: SealingSearchParams
@@ -29,13 +30,16 @@ export default async function Home({ searchParams }: HomeProps) {
       </aside>
 
       <div className="col-span-9 p-6 pb-16 flex flex-col">
-        <Button>Sealing</Button>
-        <Button className="my-4">Sealing</Button>
-        <Button color={'secondary'}>Sealing</Button>
-        <Button color={'white'}>Sealing</Button>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center font-semibold justify-end">
+          Sort by
+          <SortList />
+        </div>
+
+        <div className="flex gap-4 items-center font-semibold">
           {sealing.totalResults} trips found
-          <Button size={'sm'}>Reset filters</Button>
+          <Button size={'sm'} color={'white'}>
+            Reset filters
+          </Button>
         </div>
 
         <div className="flex-1">

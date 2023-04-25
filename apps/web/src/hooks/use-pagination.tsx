@@ -9,9 +9,12 @@ export const DOTS = 'dots'
 export function usePatination({ total: _total }: { total: number }) {
   const { params } = useNavigation()
 
-  const activePage = Number(params.get('page')) || 1
-
   const total = Math.max(Math.trunc(_total), 0)
+
+  const activePage = Math.min(
+    Number(params.get('page')) || 1,
+    Math.max(total, 1)
+  )
 
   const paginationRange = useMemo(() => {
     const totalPageNumbers = SIBLINGS * 2 + 3 + BOUNDARIES * 2

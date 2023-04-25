@@ -17,8 +17,6 @@ import React from 'react'
 export function DepartureFilter() {
   const { params, updateQueryParams } = useNavigation()
 
-  const [open, setOpen] = React.useState(false)
-
   const [date, setDate] = React.useState<Date | undefined>(
     dayjs(params.get('departureDate')).isValid()
       ? dayjs(params.get('departureDate')).toDate()
@@ -27,7 +25,13 @@ export function DepartureFilter() {
 
   useDebounceEffect(
     () => {
+      if (date === undefined) return
+
+      if (dayjs(date).format('YYYY-MM-DD') === params.get('departureDate'))
+        return
+
       updateQueryParams((params) => {
+        params.set('page', '1')
         // if date is valid date
         if (date && dayjs(date).isValid()) {
           params.set('departureDate', dayjs(date).format('YYYY-MM-DD'))

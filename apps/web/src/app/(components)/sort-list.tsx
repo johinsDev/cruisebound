@@ -1,92 +1,74 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { INVERTED_ORDER, SEALING_SORT_OPTIONS } from '@/config'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { SEALING_SORT_OPTIONS } from '@/config'
 import { useNavigation } from '@/hooks/use-navigation'
-import { cn } from '@/lib/tw'
 import { Order } from '@/types'
-import { ArrowDown, Check, ChevronsUpDown } from 'lucide-react'
-import React from 'react'
+import { useMemo } from 'react'
 
 export function SortList() {
   const { updateQueryParams, params } = useNavigation()
 
-  const [open, setOpen] = React.useState(false)
+  const options = useMemo(() => {
+    const OPTIONS: Record<string, string> = {}
+
+    Object.entries(SEALING_SORT_OPTIONS).forEach(([sortOption, label]) => {
+      if (!sortOption || !label) return
+
+      OPTIONS[`${sortOption}-asc`] = label
+      OPTIONS[`${sortOption}-desc`] = label
+    })
+
+    return OPTIONS
+  }, [])
 
   const currentSort = params.get('sort') || undefined
 
-  const order: Order = (params.get('order') as Order) || 'asc'
+  const value = currentSort
+    ? `${currentSort}-${params.get('order')}`
+    : undefined
 
-  const handleSortChange = (sort: string) => {
+  const handleSortChange = (sort: string, order?: Order) => {
     updateQueryParams((params) => {
       params.set('sort', sort)
 
-      params.set('order', sort === currentSort ? INVERTED_ORDER[order] : order)
+      params.set('order', order ?? 'asc')
 
       params.set('page', '1')
     })
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {currentSort
-            ? Object.keys(SEALING_SORT_OPTIONS).find(
-                (sortOption) => sortOption === currentSort
-              )
-            : 'Select option...'}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandEmpty>No sort options found.</CommandEmpty>
-          <CommandGroup>
-            {Object.entries(SEALING_SORT_OPTIONS).map(([sortOption, label]) => (
-              <CommandItem
-                key={sortOption}
-                onSelect={() => {
-                  handleSortChange(sortOption)
-                }}
-              >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    currentSort === sortOption ? 'opacity-100' : 'opacity-0'
-                  )}
-                />
-                {label}
-                {sortOption === currentSort && (
-                  <ArrowDown
-                    className={cn('ml-auto h-4 w-4 transition', {
-                      'transform rotate-180': order === 'desc',
-                    })}
-                  />
-                )}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Select
+      onValueChange={(value) => {
+        const [sort, order = 'asc'] = value.split('-')
+
+        handleSortChange(sort, order as Order)
+      }}
+      value={value}
+    >
+      <SelectTrigger className="w-[160px] h-12">
+        <SelectValue placeholder="Sort options" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {Object.entries(options).map(([sortOption, label]) => (
+            <SelectItem value={sortOption} key={sortOption}>
+              {label}
+              <span className="block  text-xs text-gray-400 font-semibold">
+                {sortOption.includes('desc') ? 'Highest first' : 'Lowest first'}
+              </span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }
