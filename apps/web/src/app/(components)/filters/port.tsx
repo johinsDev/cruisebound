@@ -12,7 +12,7 @@ import { useNavigation } from '@/hooks/use-navigation'
 import { useDebounceEffect } from 'ahooks'
 import { useEffect, useState } from 'react'
 
-type PortsFilterProps = {
+export type PortsFilterProps = {
   options: string[]
 }
 

@@ -25,6 +25,8 @@
     "typescript": "4.9.4"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.3",
+    "@radix-ui/react-label": "^2.0.1",
     "@radix-ui/react-popover": "^1.0.5",
     "@radix-ui/react-select": "^1.2.1",
     "ahooks": "^3.7.6",

@@ -11,6 +11,7 @@ import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { DepartureFilter } from './(components)/filters/departure'
+import { FilterList } from './(components)/filters/filter-list'
 import { PortsFilter } from './(components)/filters/port'
 import { SearchFilter } from './(components)/filters/search'
 import { SealingCard } from './(components)/sealing-card'
@@ -27,7 +28,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <section className="grid grid-cols-12 gap-4 flex-1">
-      <aside className="col-span-3 bg-secondary p-6 flex flex-col gap-8 h-screen">
+      <aside className=" hidden lg:col-span-4 xl:col-span-3 lg:flex bg-secondary p-6 flex-col gap-8 h-screen">
         <Button color={'secondary-light'} className="ml-auto">
           <ArrowLeft />
         </Button>
@@ -41,7 +42,9 @@ export default async function Home({ searchParams }: HomeProps) {
         <Image src={logo} alt="Logo" className="mt-auto mx-auto" />
       </aside>
 
-      <div className="col-span-9 p-6 pb-16 flex flex-col overflow-hidden max-h-screen">
+      <div className="col-span-12 lg:col-span-8 xl:col-span-9 p-6 pb-16 flex flex-col overflow-hidden max-h-screen">
+        <FilterList ports={ports} />
+
         <div className="flex gap-4 items-center font-semibold justify-end">
           Sort by
           <SortList />
@@ -64,7 +67,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </Link>
         </div>
 
-        <div className="flex-1 grid grid-cols-1 gap-8 my-8 overflow-auto">
+        <div className="flex-1 flex flex-col gap-8 my-8 overflow-auto">
           {sealing.results.map((s, index) => (
             <SealingCard key={index} sealing={s} />
           ))}
