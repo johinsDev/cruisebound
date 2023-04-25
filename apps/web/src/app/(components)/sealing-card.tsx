@@ -102,17 +102,3 @@ export function SealingCard({ sealing: s }: SealingCardProps) {
     </Link>
   )
 }
-
-// githbu actions
-// husky
-// lint staged
-// docs
-// mobile
-// useFilter hook
-// useSort hook
-// filters modal
-// nprogress
-// skeleton
-// framer motion
-
-// tests

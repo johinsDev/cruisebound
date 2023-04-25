@@ -6,10 +6,10 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Next.js Starter',
-    template: `%s - Next.js Starter'`,
+    default: 'Cruise Sealing',
+    template: `%s - Cruise Sealing`,
   },
-  description: 'A Next.js starter styled with Tailwind CSS',
+  description: 'Find your next cruise sealing',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' },
