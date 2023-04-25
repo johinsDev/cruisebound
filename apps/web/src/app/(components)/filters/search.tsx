@@ -25,10 +25,14 @@ export function SearchFilter() {
   )
 
   return (
-    <Input
-      placeholder="Search"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
+    <div className="flex flex-col gap-1">
+      <label htmlFor="q">Search</label>
+      <Input
+        placeholder="Search"
+        value={value}
+        name="q"
+        onChange={(e) => setValue(e.target.value)}
+      />
+    </div>
   )
 }
