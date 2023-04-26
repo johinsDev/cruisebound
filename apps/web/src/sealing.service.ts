@@ -69,14 +69,17 @@ export async function getDeparturePort() {
     .sort()
 }
 
-export async function getSealing(searchParams: SealingSearchParams) {
+export async function getSealing(
+  searchParams: SealingSearchParams,
+  sailings: Sealing[]
+) {
   const filters = [
     new DepartureDateFilter(searchParams),
     new PortFilter(searchParams),
     new QFilter(searchParams),
   ]
 
-  let data = applyFilters(searchParams, filters, await getSailingsAPI())
+  let data = applyFilters(searchParams, filters, sailings)
 
   data = applySort<Sealing>(data, searchParams.sort, searchParams.order)
 

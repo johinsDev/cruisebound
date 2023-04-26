@@ -1,6 +1,7 @@
 import logo from '@/app/(assets)/logo.svg'
 import { Pagination } from '@/app/(components)/pagination'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { getSailingsAPI } from '@/lib/api'
 import { cn } from '@/lib/tw'
 import {
   SealingSearchParams,
@@ -22,7 +23,9 @@ type HomeProps = {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const sealing = await getSealing(searchParams)
+  const sailings = await getSailingsAPI()
+
+  const sealing = await getSealing(searchParams, sailings)
 
   const ports = await getDeparturePort()
 
