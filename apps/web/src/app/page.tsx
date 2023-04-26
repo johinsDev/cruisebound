@@ -72,7 +72,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <div className="flex-1 flex flex-col gap-8 my-8 overflow-auto">
           {sealing.results.map((s, index) => (
-            <SealingCard key={index} sealing={s} />
+            <SealingCard key={index} sealing={s} index={index} />
           ))}
 
           {!sealing.results.length && (

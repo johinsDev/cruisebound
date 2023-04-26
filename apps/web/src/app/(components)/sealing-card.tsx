@@ -1,7 +1,9 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/tw'
 import { Sealing } from '@/types'
 import dayjs from 'dayjs'
+import { motion } from 'framer-motion'
 import { ArrowRight, DollarSign, Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -34,12 +36,36 @@ function formatCurrency(value: number) {
 
 type SealingCardProps = {
   sealing: Sealing
+  index: number
 }
 
-export function SealingCard({ sealing: s }: SealingCardProps) {
+export function SealingCard({ sealing: s, index }: SealingCardProps) {
+  const animations = {
+    initial: {
+      translateY: 100,
+      opacity: 0,
+    },
+    animate: {
+      translateY: 0,
+      opacity: 1,
+    },
+    exit: {
+      translateY: 100,
+      opacity: 0,
+    },
+  }
+
   return (
     <Link href={`/sealing/${s.name}`}>
-      <article className="flex border flex-wrap rounded-lg shadow-lg overflow-hidden w-full min-h-64 xl:flex-nowrap">
+      <motion.article
+        transition={{
+          delay: 0.2 * (index - 1),
+          ease: 'easeInOut',
+          duration: 0.5,
+        }}
+        className="flex border flex-wrap rounded-lg shadow-lg overflow-hidden w-full min-h-64 xl:flex-nowrap"
+        {...animations}
+      >
         <div className="relative w-full h-40 xl:h-[inherit] xl:w-72 flex-shrink-0">
           <div className="absolute top-4 left-4 text-white z-10 bg-black/70 py-0.5 px-2 rounded">
             {formatDate(s.departureDate, s.returnDate)}
@@ -120,7 +146,7 @@ export function SealingCard({ sealing: s }: SealingCardProps) {
             </Button>
           </div>
         </div>
-      </article>
+      </motion.article>
     </Link>
   )
 }
