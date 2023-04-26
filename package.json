@@ -10,7 +10,8 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
     "turbo": "^1.9.3"
