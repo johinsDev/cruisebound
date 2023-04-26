@@ -9,6 +9,7 @@ export const SEALING_SORT_OPTIONS: Partial<
   price: 'Price',
   departureDate: 'Departure Date',
   duration: 'Duration',
+  'ship.line.logo': 'Ship',
 }
 
 export const INVERTED_ORDER: Record<Order, Order> = {

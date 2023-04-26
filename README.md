@@ -1,94 +1,156 @@
-# Turborepo starter
+# Cruisebound - A simple, clone of sailing app
 
-This is an official pnpm starter turborepo.
+## Description
 
-## What's inside?
+A clone using react and next of the sailing app, Cruisebound. To fetch the data I used React Server Components, which is a new feature of React that allows to fetch data on the server side. This app is a simple app that allows to search for sailing trips and book them.
 
-This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
+## Table of Contents
 
-### Apps and Packages
+1. [Installation](#installation)
+2. [Demo](#demo)
+3. [How create a filter][#filter]
+4. [Sort/Pagination][#sort]
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+## Installation
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+To install this project you need to have node installed on your machine. Then you can clone the repo and run the following commands:
 
-### Utilities
-
-This turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm run build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
+```bash
+pnpm install
 pnpm run dev
 ```
 
-### Remote Caching
+## Demo
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+To see a demo of this project you can go to [https://cruisebound-johinsdev.vercel.app/](https://cruisebound-johinsdev.vercel.app/)
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+## Filter
 
+### Server
+
+To create a filter you need to create a class extends from `AbstractFilter` and implement the `apply` method. This method will receive the query and the value of the filter. The query is a `Prisma` query and the value is the value of the filter. The `apply` method should return a boolean. For example:
+
+```ts
+import { AbstractFilter } from './FilterInterface'
+
+export class QFilter extends AbstractFilter<Sealing, SearchParamsQ> {
+  apply(sailing: Sealing) {
+    const q = this.getSearchParamOrDefault('q', '')
+
+    return JSON.stringify(sailing).toLowerCase().includes(q.toLowerCase())
+  }
+}
 ```
-cd my-turborepo
-pnpm dlx turbo login
+
+after that you need to add the filter to the `filters` array in the `Service`. For example:
+
+```ts
+export function getSealing(
+  searchParams: SealingSearchParams,
+  sailings: Sealing[]
+) {
+  const filters = [new QFilter(searchParams)]
+
+  const results = applyFilters(searchParams, filters, sailings)
+
+  return results
+}
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Client
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
+To create a filter on the client side you need to create a component that modify the url.To be easier
+to create a filter you can use the `useNavigation` hook. This hook will give you the `params` and `updateQueryParams` function. The `params` is a `URLSearchParams` object and the `updateQueryParams` is a function that will receive a function that will receive the `URLSearchParams` object and you can modify it. For example:
 
+```tsx
+export function SearchFilter() {
+  const { params, updateQueryParams } = useNavigation()
+
+  const [value, setValue] = useState(params.get('q'))
+
+  useDebounceEffect(
+    () => {
+      if (value === params.get('q')) return
+
+      updateQueryParams((params) => {
+        params.set('page', '1')
+
+        if (value) {
+          params.set('q', value)
+        } else {
+          params.delete('q')
+        }
+      })
+    },
+    [value],
+    { wait: 500 }
+  )
+
+  useEffect(() => {
+    if (params.get('q') === value) return
+
+    setValue(params.get('q'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.get('q')])
+
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor="q">Search</label>
+      <Input
+        placeholder="Search"
+        value={value ?? ''}
+        name="q"
+        onChange={(e) => setValue(e.target.value)}
+      />
+    </div>
+  )
+}
 ```
-pnpm dlx turbo link
+
+## Sort
+
+To use the sort you need to reuse the function `applySort` and pass the `SearchParams` and the `sort` function. The `sort` function will receive the `SearchParams` and the `Sailing` object and should return a number. For example:
+
+```ts
+export function getSealing(
+  searchParams: SealingSearchParams,
+  sailings: Sealing[]
+) {
+  const filters = [new QFilter(searchParams)]
+
+  const results = applyFilters(searchParams, filters, sailings)
+
+  data = applySort<Sealing>(data, searchParams.sort, searchParams.order)
+}
 ```
 
-## Useful Links
+applysort will return a new array with the sorted items.It can sort by nested properties. for example:
 
-Learn more about the power of Turborepo:
+```ts
+export const SEALING_SORT_OPTIONS: Partial<
+  Record<NestedKeyOf<Sealing>, string>
+> = {
+  'ship.line.logo': 'Ship',
+}
+```
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## Pagination
 
-edit order
-detail item
-auth login
-auth register
-detial categories
-order list
-detailt order
-charts
-reuse components
-lightjpuse review
-CI eslint prettier lightjpuse test vercel deploy
-tests vitest
-docker
-change folder
-next-i18n
-next-seo
-dayjs
-next-pwa
-next-auth
-playwrite
+To use the pagination you need to reuse the function `applyPagination` and pass the `SearchParams` and the `data`. For example:
+
+```ts
+export function getSealing(
+  searchParams: SealingSearchParams,
+  sailings: Sealing[]
+) {
+  const filters = [new QFilter(searchParams)]
+
+  const results = applyFilters(searchParams, filters, sailings)
+
+  data = applySort<Sealing>(data, searchParams.sort, searchParams.order)
+
+  data = applyPagination(data, searchParams.page, searchParams.limit)
+}
+```
+
+applyPagination will return a new array with the paginated items.
