@@ -32,6 +32,8 @@ jobs:
         run: pnpm run format
       - name: Lint
         run: pnpm run lint
+      - name: Typecheck
+        run: pnpm run typecheck
       - name: Pull latest changes
         run: pnpm vercel pull --yes --token=${VERCEL_TOKEN}
       - name: Print Environment Variable

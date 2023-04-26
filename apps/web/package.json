@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "analyze": "BUNDLE_ANALYZE=both next build",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/lodash.get": "^4.4.7",
