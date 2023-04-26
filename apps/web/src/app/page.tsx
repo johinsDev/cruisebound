@@ -74,6 +74,29 @@ export default async function Home({ searchParams }: HomeProps) {
           {sealing.results.map((s, index) => (
             <SealingCard key={index} sealing={s} />
           ))}
+
+          {!sealing.results.length && (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <h1 className="text-2xl font-semibold">No results found</h1>
+              <p className="text-gray-500 mb-4">
+                We couldn`t find any sailings matching your search criteria.
+              </p>
+
+              <Link
+                className={cn(
+                  buttonVariants({
+                    color: 'white',
+                    size: 'sm',
+                  })
+                )}
+                href={{
+                  pathname: '/',
+                }}
+              >
+                Reset filters
+              </Link>
+            </div>
+          )}
         </div>
 
         <Pagination total={sealing.totalPages} />
