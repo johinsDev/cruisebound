@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/tw'
 import { Sealing } from '@/types'
 import dayjs from 'dayjs'
 import { ArrowRight, DollarSign, Star } from 'lucide-react'
@@ -38,7 +39,7 @@ type SealingCardProps = {
 export function SealingCard({ sealing: s }: SealingCardProps) {
   return (
     <Link href={`/sealing/${s.name}`}>
-      <article className="flex border flex-wrap rounded-lg shadow-lg overflow-hidden w-full min-h-64">
+      <article className="flex border flex-wrap rounded-lg shadow-lg overflow-hidden w-full min-h-64 xl:flex-nowrap">
         <div className="relative w-full h-40 xl:h-[inherit] xl:w-72 flex-shrink-0">
           <div className="absolute top-4 left-4 text-white z-10 bg-black/70 py-0.5 px-2 rounded">
             {formatDate(s.departureDate, s.returnDate)}
@@ -49,6 +50,8 @@ export function SealingCard({ sealing: s }: SealingCardProps) {
               className="w-full h-full object-cover"
               src={s.ship.image}
               alt={s.ship.name}
+              width={288}
+              height={160}
             />
           )}
         </div>
@@ -62,6 +65,8 @@ export function SealingCard({ sealing: s }: SealingCardProps) {
                   className="w-24 object-contain h-16"
                   src={s.ship.line.logo}
                   alt={s.ship.line.name}
+                  width={384}
+                  height={160}
                 />
               )}
             </div>
@@ -78,13 +83,25 @@ export function SealingCard({ sealing: s }: SealingCardProps) {
               </p>
             </div>
 
-            <div className="flex mt-4 gap-2 flex-wrap">
+            <div className="flex mt-4 gap-2 flex-wrap xl:flex-nowrap">
               {s.itinerary.map((i, index) => (
                 <div key={index} className="flex items-center">
-                  <p className="font-semibold">{i}</p>
-                  {index < 3 && (
-                    <ArrowRight className="text-primary ml-2" width={16} />
-                  )}
+                  <p
+                    className={cn(
+                      'font-semibold xl:truncate xl:max-w-[125px]',
+                      {
+                        'block xl:hidden': index > 3,
+                      }
+                    )}
+                  >
+                    {i}
+                  </p>
+                  <ArrowRight
+                    className={cn('text-primary ml-2', {
+                      'block xl:hidden': index >= 3,
+                    })}
+                    width={16}
+                  />
                 </div>
               ))}
             </div>
