@@ -25,9 +25,9 @@ type HomeProps = {
 export default async function Home({ searchParams }: HomeProps) {
   const sailings = await getSailingsAPI()
 
-  const sealing = await getSealing(searchParams, sailings)
-
   const ports = await getDeparturePort()
+
+  const sealing = getSealing(searchParams, sailings)
 
   return (
     <section className="grid grid-cols-12 gap-4 flex-1">

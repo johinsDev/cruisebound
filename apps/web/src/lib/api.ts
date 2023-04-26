@@ -2,7 +2,9 @@ import { API_URL } from '../config'
 import { Sealing } from '../types'
 
 export async function getSailingsAPI(): Promise<Sealing[]> {
-  const sealing = (await fetch(API_URL)
+  const sealing = (await fetch(API_URL, {
+    cache: 'no-cache',
+  })
     .then((res) => res.json())
     .then((data) => data.results)) as Sealing[]
 

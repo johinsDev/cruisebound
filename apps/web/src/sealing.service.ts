@@ -69,7 +69,7 @@ export async function getDeparturePort() {
     .sort()
 }
 
-export async function getSealing(
+export function getSealing(
   searchParams: SealingSearchParams,
   sailings: Sealing[]
 ) {
