@@ -52,6 +52,7 @@ export function DepartureFilter() {
         ? dayjs(params.get('departureDate')).toDate()
         : undefined
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.get('departureDate')])
 
   return (

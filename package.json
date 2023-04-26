@@ -22,10 +22,5 @@
     "husky": "^8.0.3",
     "prettier": "^2.8.3"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "turbo run lint"
-    }
-  },
   "packageManager": "pnpm@7.25.0"
 }

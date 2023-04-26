@@ -43,6 +43,8 @@ export function PortsFilter({ options }: PortsFilterProps) {
     if (params.get('port') === value) return
 
     setValue(params.get('port'))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.get('port')])
 
   return (

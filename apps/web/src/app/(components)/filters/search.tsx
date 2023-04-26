@@ -32,6 +32,7 @@ export function SearchFilter() {
     if (params.get('q') === value) return
 
     setValue(params.get('q'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.get('q')])
 
   return (

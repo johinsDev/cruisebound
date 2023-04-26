@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Sealing } from '@/types'
 import dayjs from 'dayjs'
 import { ArrowRight, DollarSign, Star } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 function formatDate(departureDate: string, returnDate: string) {
@@ -43,22 +44,26 @@ export function SealingCard({ sealing: s }: SealingCardProps) {
             {formatDate(s.departureDate, s.returnDate)}
           </div>
 
-          <img
-            className="w-full h-full object-cover"
-            src={s.ship.image}
-            alt=""
-          />
+          {s.ship.image && (
+            <Image
+              className="w-full h-full object-cover"
+              src={s.ship.image}
+              alt={s.ship.name}
+            />
+          )}
         </div>
 
         <div className="flex flex-col flex-1">
           <div className="flex flex-col p-4 flex-1">
             <div className="flex justify-between gap-2 items-center">
               <p className="flex-1 font-bold text-2xl">{s.name}</p>
-              <img
-                className="w-24 object-contain h-16"
-                src={s.ship.line.logo}
-                alt=""
-              />
+              {s.ship.line.logo && (
+                <Image
+                  className="w-24 object-contain h-16"
+                  src={s.ship.line.logo}
+                  alt={s.ship.line.name}
+                />
+              )}
             </div>
 
             <div className="flex gap-4 items-center mt-4 text-lg font-medium text-neutral-500">
